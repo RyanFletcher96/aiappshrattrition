@@ -1,0 +1,15 @@
+pandas
+numpy
+matplotlib
+seaborn
+jupyter
+scikit-learn
+pytest
+pyyaml
+mlflow
+scipy
+shap
+fairlearn
+fastapi
+uvicorn
+httpx

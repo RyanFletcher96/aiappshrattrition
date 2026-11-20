@@ -1,0 +1,28 @@
+# Single source of truth for paths, randomness and success criteria.
+# Paths are relative to the project root.
+
+paths:
+  raw_data: data/raw/hrattrition.csv
+  processed_data: data/processed/hrattrition_cleaned.csv
+  model: models/model.joblib
+  metrics: models/metrics.json
+  figures: docs
+
+split:
+  test_size: 0.2
+  seed: 42
+
+cv:
+  n_splits: 5
+
+# From docs/problem_framing.md
+success_criteria:
+  min_recall: 0.70
+  min_precision: 0.40
+  max_cv_pr_auc_std: 0.05
+  max_fairness_gap: 0.10   # recall and FPR difference between groups
+
+fairness:
+  sensitive_features: [Gender, AgeBand, MaritalStatus]
+  age_bins: [18, 30, 46, 65]        # with right=False: <30, 30-45, >45
+  age_labels: ["<30", "30-45", ">45"]
