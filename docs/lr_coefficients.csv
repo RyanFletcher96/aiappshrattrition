@@ -1,0 +1,49 @@
+feature,coefficient,odds_ratio
+OverTime_Yes,1.581,4.859
+JobRole_Laboratory Technician,1.245,3.474
+JobRole_Sales Representative,1.114,3.047
+BusinessTravel_Travel_Frequently,0.787,2.196
+EducationField_Human Resources,0.664,1.943
+YearsSinceLastPromotion,0.657,1.929
+JobLevel,0.632,1.882
+EducationField_Technical Degree,0.424,1.528
+NumCompaniesWorked,0.415,1.514
+JobRole_Human Resources,0.398,1.489
+Department_Sales,0.394,1.483
+DistanceFromHome,0.311,1.365
+YearsAtCompany,0.266,1.305
+PerformanceRating,0.135,1.145
+BusinessTravel_Travel_Rarely,0.091,1.095
+EducationField_Marketing,0.077,1.08
+JobRole_Research Scientist,0.04,1.04
+Education,0.014,1.014
+MonthlyRate,0.006,1.006
+HourlyRate,-0.033,0.968
+JobRole_Sales Executive,-0.046,0.955
+RelationshipSatisfaction,-0.071,0.932
+WorkLifeBalance,-0.11,0.896
+EducationField_Medical,-0.117,0.89
+TrainingTimesLastYear,-0.149,0.861
+TenureRatio,-0.152,0.859
+PromotionStagnation,-0.16,0.852
+YearsInCurrentRole,-0.18,0.836
+JobSatisfaction,-0.187,0.829
+EducationField_Life Sciences,-0.199,0.82
+Department_Research & Development,-0.209,0.811
+Department_Human Resources,-0.218,0.804
+PercentSalaryHike,-0.231,0.794
+DailyRate,-0.236,0.79
+MonthlyIncome,-0.24,0.786
+EnvironmentSatisfaction,-0.246,0.782
+Age,-0.262,0.77
+JobInvolvement,-0.291,0.747
+JobRole_Manufacturing Director,-0.295,0.745
+SatisfactionMean,-0.309,0.734
+YearsWithCurrManager,-0.39,0.677
+JobRole_Manager,-0.434,0.648
+StockOptionLevel,-0.439,0.644
+JobRole_Healthcare Representative,-0.609,0.544
+TotalWorkingYears,-0.802,0.448
+EducationField_Other,-0.883,0.414
+BusinessTravel_Non-Travel,-0.911,0.402
+JobRole_Research Director,-1.447,0.235

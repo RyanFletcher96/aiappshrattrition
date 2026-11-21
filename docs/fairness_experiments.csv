@@ -1,0 +1,5 @@
+variant,pr_auc,precision,recall,Gender_recall_gap,Gender_fpr_gap,AgeBand_recall_gap,AgeBand_fpr_gap,recall_age_under_30,recall_age_30-45,recall_age_over_45,MaritalStatus_recall_gap,MaritalStatus_fpr_gap,threshold
+baseline_with_age,0.616,0.427,0.705,0.043,0.054,0.411,0.12,0.851,0.659,0.44,0.229,0.068,0.5754337617528323
+no_age,0.607,0.397,0.7,0.029,0.046,0.344,0.053,0.824,0.659,0.48,0.193,0.061,0.560124087707023
+no_age_or_total_working_years,0.584,0.383,0.7,0.052,0.025,0.277,0.045,0.797,0.67,0.52,0.218,0.066,0.551425519806192
+baseline_threshold_per_age_band,0.616,0.363,0.726,0.01,0.07,0.053,0.27,0.757,0.703,0.72,0.252,0.07,"{'>45': 0.142, '<30': 0.716, '30-45': 0.509}"

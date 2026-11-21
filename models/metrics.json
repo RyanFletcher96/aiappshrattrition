@@ -1,0 +1,24 @@
+{
+  "model_name": "logistic_regression",
+  "threshold": 0.5754337617528323,
+  "evaluated_at": "2026-11-21T14:15:39+00:00",
+  "test_size": 294,
+  "baseline_pr_auc": 0.1598639455782313,
+  "metrics": {
+    "pr_auc": 0.5392314192596628,
+    "roc_auc": 0.7823240589198036,
+    "brier": 0.1604004303547026,
+    "recall": 0.5531914893617021,
+    "precision": 0.3880597014925373,
+    "f1": 0.45614035087719296,
+    "true_positives": 26,
+    "false_positives": 41,
+    "false_negatives": 21,
+    "true_negatives": 206
+  },
+  "criteria": {
+    "recall_target_met": false,
+    "precision_target_met": false,
+    "beats_dummy_baseline": true
+  }
+}

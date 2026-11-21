@@ -1,0 +1,18 @@
+{
+  "model_name": "logistic_regression",
+  "max_gap": 0.1,
+  "gaps": {
+    "train_oof_Gender_recall_gap": 0.0433,
+    "train_oof_Gender_fpr_gap": 0.0538,
+    "train_oof_AgeBand_recall_gap": 0.4114,
+    "train_oof_AgeBand_fpr_gap": 0.12,
+    "train_oof_MaritalStatus_recall_gap": 0.2289,
+    "train_oof_MaritalStatus_fpr_gap": 0.0683,
+    "test_Gender_recall_gap": 0.1089,
+    "test_Gender_fpr_gap": 0.0403,
+    "test_AgeBand_recall_gap": 0.5948,
+    "test_AgeBand_fpr_gap": 0.1719,
+    "test_MaritalStatus_recall_gap": 0.3056,
+    "test_MaritalStatus_fpr_gap": 0.2111
+  }
+}

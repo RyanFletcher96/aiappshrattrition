@@ -82,3 +82,16 @@ def test_protected_columns_included_when_requested():
         assert any(col in name for name in feature_names), (
             f"Protected column '{col}' is missing when include_protected=True"
         )
+
+
+def test_exclude_columns_removes_age():
+    """exclude_columns=("Age",) must stop Age reaching the model, for the fairness experiment."""
+    df = add_engineered_features(make_mini_df())
+
+    preprocessor = build_preprocessor(exclude_columns=("Age",)).fit(df)
+    feature_names = preprocessor.get_feature_names_out()
+
+    assert not any("Age" in name for name in feature_names), "Age was passed to the model"
+    assert any("TotalWorkingYears" in name for name in feature_names), (
+        "Other numeric columns should still be included"
+    )

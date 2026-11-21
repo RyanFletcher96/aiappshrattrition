@@ -1,0 +1,17 @@
+dataset,feature,group,recall,fpr,selection_rate,count,leavers,index
+train_oof,Gender,Female,0.732,0.214,0.292,472.0,71.0,
+train_oof,Gender,Male,0.689,0.161,0.25,704.0,119.0,
+train_oof,AgeBand,,0.851,0.25,0.422,258.0,74.0,<30
+train_oof,AgeBand,,0.659,0.179,0.242,693.0,91.0,30-45
+train_oof,AgeBand,,0.44,0.13,0.164,225.0,25.0,>45
+train_oof,MaritalStatus,Divorced,0.759,0.137,0.205,263.0,29.0,
+train_oof,MaritalStatus,Married,0.561,0.192,0.237,540.0,66.0,
+train_oof,MaritalStatus,Single,0.789,0.205,0.354,373.0,95.0,
+test,Gender,Female,0.625,0.19,0.25,116.0,16.0,
+test,Gender,Male,0.516,0.15,0.213,178.0,31.0,
+test,AgeBand,,0.706,0.275,0.382,68.0,17.0,<30
+test,AgeBand,,0.619,0.146,0.202,178.0,21.0,30-45
+test,AgeBand,,0.111,0.103,0.104,48.0,9.0,>45
+test,MaritalStatus,Divorced,0.75,0.067,0.109,64.0,4.0,
+test,MaritalStatus,Married,0.444,0.148,0.188,133.0,18.0,
+test,MaritalStatus,Single,0.6,0.278,0.361,97.0,25.0,

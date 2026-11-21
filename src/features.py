@@ -90,12 +90,21 @@ def age_band(age: pd.Series, bins: list, labels: list) -> pd.Series:
     """Group ages into bands for fairness evaluation (not a model input)."""
     return pd.cut(age, bins=bins, labels=labels, right=False)
 
-def build_preprocessor(include_protected: bool = False) -> ColumnTransformer:
-    """Scale numeric/ordinal columns and one-hot encode nominal ones. Unfitted."""
+def build_preprocessor(
+    include_protected: bool = False, exclude_columns: tuple = ()
+) -> ColumnTransformer:
+    """Scale numeric/ordinal columns and one-hot encode nominal ones. Unfitted.
+
+    exclude_columns removes numeric/ordinal inputs (e.g. Age) for fairness experiments.
+    """
     nominal = NOMINAL_COLUMNS + PROTECTED_COLUMNS if include_protected else NOMINAL_COLUMNS
+    numeric = [
+        c for c in NUMERIC_COLUMNS + ENGINEERED_COLUMNS + ORDINAL_COLUMNS
+        if c not in exclude_columns
+    ]
     return ColumnTransformer(
         transformers=[
-            ("num", StandardScaler(), NUMERIC_COLUMNS + ENGINEERED_COLUMNS + ORDINAL_COLUMNS),
+            ("num", StandardScaler(), numeric),
             (
                 "cat",
                 OneHotEncoder(handle_unknown="ignore", drop="if_binary", sparse_output=False),
@@ -106,11 +115,13 @@ def build_preprocessor(include_protected: bool = False) -> ColumnTransformer:
         remainder="drop",
     )
 
-def build_pipeline(model, include_protected: bool = False) -> Pipeline:
+def build_pipeline(
+    model, include_protected: bool = False, exclude_columns: tuple = ()
+) -> Pipeline:
     """Chain feature engineering, preprocessing and a model. Fitted only on training data."""
     return Pipeline([
         ("features", FunctionTransformer(add_engineered_features)),
-        ("prep", build_preprocessor(include_protected)),
+        ("prep", build_preprocessor(include_protected, exclude_columns)),
         ("model", model),
     ])
 
