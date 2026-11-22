@@ -5,6 +5,10 @@ import matplotlib.pyplot as plt
 import mlflow
 import numpy as np
 import pandas as pd
+import platform
+import sklearn
+import subprocess
+from datetime import datetime, timezone
 from pathlib import Path
 from sklearn.calibration import calibration_curve
 from sklearn.dummy import DummyClassifier
@@ -12,8 +16,11 @@ from sklearn.ensemble import HistGradientBoostingClassifier, RandomForestClassif
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import brier_score_loss, make_scorer, precision_recall_curve, precision_score
 from sklearn.model_selection import StratifiedKFold, cross_val_predict, cross_validate
-from config_loader import load_config
+from config_loader import PROJECT_ROOT, load_config
 from features import build_pipeline, load_features, split_data
+
+# Bump this by hand whenever the saved model changes, so a loaded file says which one it is
+MODEL_VERSION = "1.0"
 
 SCORING = {
     "pr_auc": "average_precision",
@@ -73,6 +80,37 @@ def save_calibration_plot(y_true, proba, output_path: Path) -> None:
     plt.tight_layout()
     plt.savefig(output_path, dpi=150)
     plt.close()
+
+def get_git_commit(repo_dir: Path = PROJECT_ROOT) -> str:
+    """Return the short git commit hash of the code, or "unknown" if git is not available."""
+    try:
+        result = subprocess.run(
+            ["git", "rev-parse", "--short", "HEAD"],
+            cwd=repo_dir, capture_output=True, text=True, check=True,
+        )
+        return result.stdout.strip()
+    except (FileNotFoundError, subprocess.CalledProcessError):
+        # FileNotFoundError: git is not installed; CalledProcessError: not a git repo
+        return "unknown"
+
+def build_metadata(training_rows: int, cv_pr_auc_mean: float, cv_pr_auc_std: float,
+                   threshold_recall: float, threshold_precision: float, random_seed: int) -> dict:
+    """Record which model this is, what produced it and the evidence for choosing it."""
+    # Library versions matter because a joblib file may not load under a different scikit-learn
+    return {
+        "version": MODEL_VERSION,
+        "trained_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+        "git_commit": get_git_commit(),
+        "python_version": platform.python_version(),
+        "sklearn_version": sklearn.__version__,
+        "pandas_version": pd.__version__,
+        "training_rows": int(training_rows),
+        "cv_pr_auc_mean": float(cv_pr_auc_mean),
+        "cv_pr_auc_std": float(cv_pr_auc_std),
+        "threshold_recall": float(threshold_recall),
+        "threshold_precision": float(threshold_precision),
+        "random_seed": int(random_seed),
+    }
 
 if __name__ == "__main__":
     cfg = load_config()
@@ -140,12 +178,33 @@ if __name__ == "__main__":
     save_calibration_plot(y_train, oof_proba, figures_dir / "calibration_curve.png")
     print(f"Brier score (out-of-fold): {brier:.3f}")
 
-    # 6. Fit on the whole training set and save
+    # 6. Fit on the whole training set and save, with lineage metadata alongside the pipeline
     pipe.fit(X_train, y_train)
+    metadata = build_metadata(
+        training_rows=len(X_train),
+        cv_pr_auc_mean=best["pr_auc_mean"],
+        cv_pr_auc_std=best["pr_auc_std"],
+        threshold_recall=recall,
+        threshold_precision=precision,
+        random_seed=seed,
+    )
     model_path = cfg["paths"]["model"]
     model_path.parent.mkdir(parents=True, exist_ok=True)
     joblib.dump(
-        {"pipeline": pipe, "threshold": threshold, "model_name": best_name},
+        {"pipeline": pipe, "threshold": threshold, "model_name": best_name,
+         "metadata": metadata},
         model_path,
     )
-    print(f"Saved {best_name} to {model_path}")
+    print(f"Saved {best_name} (version {MODEL_VERSION}) to {model_path}")
+
+    # 7. Register the fitted pipeline so MLflow tracks its versions (champion/challenger)
+    with mlflow.start_run(run_name=f"{best_name}_final_model"):
+        mlflow.log_params(metadata)
+        mlflow.log_param("threshold", threshold)
+        mlflow.set_tag("model_version", MODEL_VERSION)
+        # MLflow saves with skops, which refuses unknown functions unless we trust them,
+        # and our own feature-engineering step is one of those.
+        mlflow.sklearn.log_model(
+            pipe, name="model", registered_model_name="hr-attrition",
+            skops_trusted_types=["features.add_engineered_features"],
+        )

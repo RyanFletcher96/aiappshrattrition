@@ -1,10 +1,11 @@
 # Raw Data
 
-Place the real Give Me Some Credit training file here:
+Place the IBM HR Analytics Employee Attrition dataset here, saved as:
 
 ```text
-data/raw/cs-training.csv
+data/raw/hrattrition.csv
 ```
 
-This file is intentionally ignored by Git. In the Topic 1 lab, the notebook expects this exact path.
+The file downloaded from Kaggle is called `WA_Fn-UseC_-HR-Employee-Attrition.csv`; rename it to `hrattrition.csv`.
 
+This file is intentionally ignored by Git. `src/preprocess.py` and the EDA notebook expect this exact path.

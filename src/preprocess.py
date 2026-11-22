@@ -49,6 +49,8 @@ DROP_COLUMNS = [
 
 TARGET_COLUMN = "Attrition"
 
+ID_COLUMN = "EmployeeNumber"
+
 VALUE_RANGES = {
     "Age": (16, 80),
     "MonthlyIncome": (1, None),
@@ -94,6 +96,15 @@ def validate_columns(df: pd.DataFrame) -> None:
     nulls = df[REQUIRED_NON_NULL].isnull().sum()
     if nulls.any():
         raise ValueError(f"Nulls in required columns:\n{nulls[nulls > 0]}")
+
+    # Exact copies are checked first, otherwise the ID check would always catch them
+    dup_rows = df.duplicated().sum()
+    if dup_rows:
+        raise ValueError(f"Duplicate rows found: {dup_rows}")
+
+    dup_ids = df[ID_COLUMN].duplicated().sum()
+    if dup_ids:
+        raise ValueError(f"Duplicate {ID_COLUMN} values found: {dup_ids}")
 
     bad_target = set(df[TARGET_COLUMN].unique()) - {"Yes", "No"}
     if bad_target:

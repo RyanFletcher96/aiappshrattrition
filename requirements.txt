@@ -4,6 +4,7 @@ matplotlib
 seaborn
 jupyter
 scikit-learn
+joblib
 pytest
 pyyaml
 mlflow

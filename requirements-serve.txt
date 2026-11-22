@@ -1,0 +1,23 @@
+# Runtime dependencies for the attrition API only (used by the Dockerfile).
+# Development tools (mlflow, shap, fairlearn, matplotlib, pytest, jupyter...)
+# stay in requirements.txt and are NOT installed in the image.
+#
+# Pinned to the versions in the project .venv used to train models/model.joblib.
+# If you upgrade that environment and retrain, update these pins to match.
+# scikit-learn matters most: the saved pipeline must be loaded by the same
+# scikit-learn version that fitted it.
+
+# Web API
+fastapi==0.165.0
+uvicorn==0.54.0
+pydantic==2.14.4
+
+# Model and data handling (needed to load and run the saved pipeline)
+scikit-learn==1.9.1
+numpy==2.5.5
+scipy==1.18.1
+pandas==3.1.1
+joblib==1.6.0
+
+# Reading config/config.yaml
+PyYAML==6.0.3

@@ -6,11 +6,13 @@ import numpy as np
 import pytest
 import sys
 import os
+import tempfile
+from pathlib import Path
 
 # Allow the test runner to find src/ without installing the package
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
-from train import choose_threshold, get_models
+from train import MODEL_VERSION, build_metadata, choose_threshold, get_git_commit, get_models
 
 
 def make_scores():
@@ -56,3 +58,33 @@ def test_dummy_baseline_is_included():
     models = get_models(seed=42)
     assert "dummy" in models, "Dummy baseline missing from the model comparison"
     assert len(models) >= 3, "Expected the baseline plus at least two real models"
+
+
+def make_metadata():
+    """Build metadata from small made-up training results."""
+    return build_metadata(
+        training_rows=100, cv_pr_auc_mean=0.5, cv_pr_auc_std=0.05,
+        threshold_recall=0.7, threshold_precision=0.4, random_seed=42,
+    )
+
+
+def test_metadata_has_required_keys():
+    """The saved metadata must contain every lineage key the API relies on."""
+    required = {
+        "version", "trained_at", "git_commit", "python_version", "sklearn_version",
+        "pandas_version", "training_rows", "cv_pr_auc_mean", "cv_pr_auc_std",
+        "threshold_recall", "threshold_precision", "random_seed",
+    }
+    metadata = make_metadata()
+
+    missing = required - set(metadata)
+    assert not missing, f"Metadata is missing keys: {missing}"
+    assert metadata["version"] == MODEL_VERSION, "Metadata version does not match MODEL_VERSION"
+    assert metadata["trained_at"].endswith("+00:00"), "trained_at should be in UTC"
+
+
+def test_git_commit_falls_back_outside_a_repo():
+    """Outside a git repository the commit should be reported as unknown, not crash."""
+    with tempfile.TemporaryDirectory() as folder:
+        commit = get_git_commit(Path(folder))
+    assert commit == "unknown", f"Expected 'unknown' outside a repo, got {commit}"

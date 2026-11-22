@@ -1,0 +1,33 @@
+# Keep the build context small and free of local or sensitive files.
+# The Dockerfile only copies src/, config/ and models/model.joblib.
+
+# Version control and environments
+.git
+.gitignore
+.venv
+venv
+.env
+*.env
+
+# Python caches
+**/__pycache__
+**/*.py[cod]
+.pytest_cache
+.mypy_cache
+.ruff_cache
+.ipynb_checkpoints
+
+# Data, experiments and documents (not needed to serve predictions)
+data/
+notebooks/
+mlruns/
+mlartifacts/
+mlflow.db
+docs/
+tests/
+logs/
+
+# Editor and OS files
+.vscode/
+.idea/
+.DS_Store

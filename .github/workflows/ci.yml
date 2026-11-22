@@ -1,0 +1,39 @@
+# Continuous integration for the HR attrition project.
+# On every push or pull request to main: build a clean environment, install
+# dependencies, run the tests, then run the quality gate on the committed results.
+# A green run means the code and results files are sane. It does NOT mean the
+# model is fair, the metric is right, or deployment is justified: that needs
+# documented human review (see the model card).
+
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Get a copy of the repository (raw data and the trained model are not in Git)
+      - uses: actions/checkout@v4
+
+      # Same Python version as local development; cache pip downloads to speed up reruns
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+          cache: pip
+
+      - name: Install dependencies
+        run: python -m pip install -r requirements.txt
+
+      # Tests build their own data in code; the API tests skip because there is no model
+      - name: Run tests
+        run: python -m pytest -v
+
+      # Fails only on broken results; missed targets and fairness gaps are reported for review
+      - name: Quality gate
+        run: python src/quality_gate.py

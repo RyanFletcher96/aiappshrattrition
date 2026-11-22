@@ -22,6 +22,7 @@ models/*.joblib
 logs/*.csv
 mlruns/
 mlartifacts/
+mlflow.db
 
 # Keep placeholders
 !data/raw/README.md

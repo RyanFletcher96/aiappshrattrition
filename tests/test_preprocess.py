@@ -58,3 +58,19 @@ def test_out_of_range_value_raises():
     df["JobSatisfaction"] = [1, 7, 3]
     with pytest.raises(ValueError, match="JobSatisfaction above maximum"):
         validate_columns(df)
+
+
+def test_duplicate_employee_number_raises():
+    """Two different rows sharing an EmployeeNumber should raise a ValueError."""
+    df = make_mini_df()
+    df["EmployeeNumber"] = [1, 1, 3]
+    with pytest.raises(ValueError, match="Duplicate EmployeeNumber"):
+        validate_columns(df)
+
+
+def test_duplicate_rows_raise():
+    """An exact copy of a row should raise a ValueError."""
+    df = make_mini_df()
+    df = pd.concat([df, df.iloc[[0]]], ignore_index=True)
+    with pytest.raises(ValueError, match="Duplicate rows"):
+        validate_columns(df)
